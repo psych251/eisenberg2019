@@ -1,6 +1,6 @@
 ---
-title: "Reproducibility Report for Study X by Sample & Sample (20xx, Psychological Science)"
-author: "Reproducibility Project Author[s] (contact information)"
+title: "Reproducibility Report for Uncovering the structure of self-regulation through data-driven ontology discover by Eisenberg et al. (2019, Nature Communication)"
+author: "Mia Jimenez-Fuentes (miafuen@stanford.edu)"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 format:
   html:
@@ -12,23 +12,23 @@ format:
 
 ## Introduction
 
-[No abstract is needed.]  Each reproducibility project will have a straightforward, no frills report of the study and reproducibility results. These reports will be publicly available as supplementary material for the aggregate report(s) of the project as a whole.  Also, to maximize project integrity, the intro and methods will be written and critiqued in advance of your attempt to reproduce the results. Introductions can be just 1-2 paragraphs clarifying the main idea of the original study, the target finding for your reproducibility attempt, and any other essential information.  It will NOT have a literature review -- that is in the original publication. You can write both the introduction and the methods in past tense.  
-
-**Clarify key analysis of interest here**  You can also pre-specify additional analyses you plan to do.
+I propose to reproduce the findings presented in *Uncovering the structure of self-regulation through data-driven ontology discover*, where Eisenberg et al. (2019) explore the idea of defining and measuring the concept of self-regulation. The key analyses of interest here are factor anlalyses which identify latent dimensions underlying nearly 200 task and survey variables, and the clustering analyses, which map how those measures group together. 
 
 ### Justification for choice of study
 
-Please describe why you chose to reproduce the results of this study.
+In *Uncovering the structure of self-regulation through data-driven ontology discover*, Eisenberg et al. (2019) provides a compelling example of how large-scale, complicated, data-driven methods can be used to clarify the meaning and measurement of psychological constructs that are otherwise incredibly difficult to pin down. In this paper, the authors explore the idea of self-regulation. This concept has been tied to various outcomes ranging from health to education, but the field has consistently debated how to measure it and, more broadly, if it is a coherent construct at all. This idea comes up frequently in discussions around constructs like these, especially so in conversations around skills of executive functions. This paper tackles this issue by integrating a broad battery of tasks, surveys, and real-world outcomes, offering a unique opportunity to examine how different measures related to one another. 
+
+Reproducing the results of this study will be valuable for several reasons. To begin, the authors' methods are broad and complex - involving large-scale data collection, exploratory factor analysis, clustering, and predictive modeling. Reproducing their approach offers an opportunity to practice key skills in dimensional reduction, psychometrics, and prediction. Furthermore, this paper raises important conceptual issues about the reliability and validity of common measures in psychology - issues central to my own developing research interests. Overall, this work is methodologically complex and incredibly theoretically relevant. It will allow me to deepens my understanding of advanced data techniques while also informing my ongoing exploration about the measurement and meaning of related constructs in research. 
 
 ### Anticipated challenges
 
-Do you anticipate running into any challenges when attempting to reproduce these result(s)? If so please, list them here.
+One challenge I anticipate surrounds the complexity of the analytic pipeline - the authors rely on several advanced methods and small deviations in parameter choices or implementation could lead to different results. Secondly, the dataset includes nearly 200 independent variables derived from the survey and behavioral tasks and reproducing the results will require careful preprocessing to match the authors' original approach.  
 
 ### Links
 
-Project repository (on Github): 
+Project repository: https://github.com/psych251/eisenberg2019
 
-Original paper (as hosted in your repo): 
+Original paper: https://github.com/psych251/eisenberg2019/blob/main/original_paper/eisenberg2019pdf.pdf
 
 ## Methods
 
