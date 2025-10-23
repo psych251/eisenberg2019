@@ -34,11 +34,27 @@ Original paper: https://github.com/psych251/eisenberg2019/blob/main/original_pap
 
 ### Description of the steps required to reproduce the results
 
-Please describe all the steps necessary to reproduce the key result(s) of this study. 
+Steps necessary for reproducing Eisenberg 2019:
+
+* Data Access and Setup: 
+  * Identify data used in the original study (processed file is meaningful_variables_imputed.csv)
+  * Confirm variable count, number of participants, and match to original paper more broadly 
+  * Identify meaningful scripts for reference (buried within different analysis folders, primarly within dimensional_structure/ and graph_anlaysis/)
+* Reproduce Figure 2 (Factor/ Dimensional Structure)
+  * Compute inter-variable correlation matrix 
+  * Run exploratory factor analysis (EFA) using extraction and rotation methods 
+  * Determine dimensinoality using parallel analysis 
+* Reproduce Figure 3 (Ontological Graph)
+  * Construct network representation using the correlation matrix 
+  * Apply graph-based clustering/ hierarchical grouping 
+  * Visualize ontology structure 
 
 ### Differences from original study
 
-Explicitly describe known differences in the analysis pipeline between the original paper and yours (e.g., computing environment). The goal, of course, is to minimize those differences, but differences may occur. Also, note whether such differences are anticipated to influence your ability to reproduce the original results.
+* Computing environment 
+  * The original paper uses a mix of Python and R 
+* Data preprocessing 
+  * Original imputation not reproduced, instead starting from author's finalized imputed dataset 
 
 ## Project Progress Check 1
 
