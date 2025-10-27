@@ -139,7 +139,7 @@ The analyses as specified in the analysis plan.
 
 *Side-by-side graph with original graph is ideal here*
 
-```{r fig-2-reproduction}
+```{r fig-2-reproduction, echo=F}
 # connectivity matrix 
 cor_mat <- cor(df, use = "pairwise.complete.obs", method = "pearson") # base correlation
 n_subj  <- nrow(df)
@@ -148,8 +148,8 @@ adj_mat <- EBICglasso(S = cor_mat, n = n_subj) # partial correlation adjacency m
 # threshold edge list 
 Adj_thr <- adj_mat
 Adj_thr[abs(Adj_thr) < threshold_abs] <- 0
-cat("→ Retained edges ≥", threshold_abs, ":", 
-    sum(Adj_thr[upper.tri(Adj_thr)] != 0), "\n")
+# cat("→ Retained edges ≥", threshold_abs, ":", 
+#     sum(Adj_thr[upper.tri(Adj_thr)] != 0), "\n")
 
 # layout from thresholded graph
 lay <- qgraph(Adj_thr, layout = "spring", DoNotPlot = TRUE)$layout
