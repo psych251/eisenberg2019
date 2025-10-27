@@ -60,13 +60,18 @@ Steps necessary for reproducing Eisenberg 2019:
 
 ### Measure of success
 
-Please describe the outcome measure for the success or failure of your reproduction and how this outcome will be computed.
-
+The primary success criterion is whether I can produce the two figures -- specifically the sparse partial-correlation network with a clearly separated task vs survey DV structure and the subsequent factor/cluster based ontology which involves extracting latent dimensions of hierarchical communities from the space constructed in figure 2. Both outcomes will be evaluated by structure/ visual alignment with the original paper and quantitatively (by checking counts of things like dependent variables (DVs) and subjects). 
 
 ### Pipeline progress
 
-Earlier in this report, you described the steps necessary to reproduce the key result(s) of this study. Please describe your progress on each of these steps (e.g., data preprocessing, model fitting, model evaluation).
-
+* Data Access and Setup: 
+  * Identified and loaded the authors' finalized imputed datasets
+  * Confirmed participant count and DV structure are consistent with the original study 
+* Reproduce Figure 2 (Factor/ Dimensional Structure)
+  * Successfully computed the partial correlation network 
+    * DV counts match the paper's, but the breakdown between task and survey are off by 5. Will have to revisit to understand how to adjust the split
+* Reproduce Figure 3 (Ontological Graph)
+  * Have not yet started; will have to finish the dimensionality estimation step that is part of Figure 2
 
 ## Results
 
@@ -76,14 +81,56 @@ Data preparation following the analysis plan.
 	
 ```{r include=F}
 ### Data Preparation
+# setting static variables 
+# edge_metric <- "glasso" 
+threshold_abs <- 0.05
+set.seed(2025)
 
 #### Load Relevant Libraries and Functions
+library(tidyverse)
+library(here)
+library(qgraph)
+library(psych)
+library(ggplot2)
 
 #### Import data
+data_file <- here("data/meaningful_variables_imputed.csv") 
+out_dir <- here("results", "figure2_glasso") # where to save image to
+if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE) # creates folder if not already there 
+
+df <- read.csv(data_file, stringsAsFactors = FALSE, check.names = TRUE)
 
 #### Data exclusion / filtering
 
+
 #### Prepare data for analysis - create columns etc.
+if ("X" %in% names(df)) { # if there is an ID column called "X" (where subjectId is saved)
+  df <- df[!is.na(df$X) & df$X != "", ] # drop rows with missing IDs
+  rownames(df) <- df$X # set IDs as rownames
+  df$X <- NULL # remove ID column from data
+}
+
+num_cols <- vapply(df, is.numeric, logical(1)) # identify numeric variables
+df <- df[, num_cols, drop = FALSE] # keep numeric columns only
+# matches paper vv 
+# cat("→ N participants:", nrow(df), " | N DVs:", ncol(df), "\n") # checking sample size and number of DVs 
+
+
+vars <- colnames(df) # defining variable names
+is_survey <- grepl("survey", vars, ignore.case = TRUE) # finding the survyes by which ones have the word survey in them
+# grouping task and survey for further analysis 
+groups <- list(
+  Task   = vars[!is_survey],
+  Survey = vars[is_survey]
+)
+
+vars <- colnames(df) # defining variable names
+is_survey <- grepl("survey", vars, ignore.case = TRUE) # finding the survyes by which ones have the word survey in them
+groups <- list(Task = vars[!is_survey], Survey = vars[is_survey]) # grouping task and survey for further analysis 
+n_task <- sum(!is_survey); n_survey <- sum(is_survey) # counting the tasks 
+
+# also matches paper vv 
+# cat("→ Tasks:", n_task, "  Surveys:", n_survey, "\n") # checking task split 
 ```
 
 ### Key analysis
@@ -91,6 +138,54 @@ Data preparation following the analysis plan.
 The analyses as specified in the analysis plan.  
 
 *Side-by-side graph with original graph is ideal here*
+
+```{r fig-2-reproduction}
+# connectivity matrix 
+cor_mat <- cor(df, use = "pairwise.complete.obs", method = "pearson") # base correlation
+n_subj  <- nrow(df)
+adj_mat <- EBICglasso(S = cor_mat, n = n_subj) # partial correlation adjacency matrix
+
+# threshold edge list 
+Adj_thr <- adj_mat
+Adj_thr[abs(Adj_thr) < threshold_abs] <- 0
+cat("→ Retained edges ≥", threshold_abs, ":", 
+    sum(Adj_thr[upper.tri(Adj_thr)] != 0), "\n")
+
+# layout from thresholded graph
+lay <- qgraph(Adj_thr, layout = "spring", DoNotPlot = TRUE)$layout
+
+# colors and graph visual parameters 
+node_colors <- ifelse(is_survey, "red", "blue")
+edge_col <- adjustcolor("gray", alpha.f = 0.5)
+vsize_auto <- 2.4
+
+# clean plot (not labeled)
+# png(file.path(out_dir, "network_glasso_abs_ge_0.05_clean.png"),
+#     width = 1800, height = 1300, res = 170)
+qgraph(
+  Adj_thr,
+  layout = lay,
+  color = node_colors,
+  groups = groups,
+  legend = FALSE,
+  labels = FALSE,
+  vsize = vsize_auto,
+  edge.color = edge_col, posCol = edge_col, negCol = edge_col,
+  border.width = 1,
+  title = "EBICglasso Network (|partial r| ≥ 0.05)"
+)
+
+# annotation
+text(x = max(lay[,1]) * 1.15, 
+     y = mean(range(lay[,2])) + 0.05,
+     labels = paste0(n_task, " Task DVs"), col = "blue", cex = 1.2, adj = 0)
+text(x = max(lay[,1]) * 1.15,
+     y = mean(range(lay[,2])) - 0.05,
+     labels = paste0(n_survey, " Survey DVs"), col = "red", cex = 1.2, adj = 0)
+
+# dev.off()
+```
+
 
 ### Exploratory analyses
 
